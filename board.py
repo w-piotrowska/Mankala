@@ -1,14 +1,16 @@
 import numpy as np
 
 N = 6
-K = 4
+# K = 4
 
 class Board:
-    def __init__(self):
+    def __init__(self, N, K):
         self.players = [np.repeat(K, N + 1),np.repeat(K, N + 1)]
         self.players[0][N] = 0
         self.players[1][N] = 0
         self.active_player = 0
+
+        self.type_last_move = -1
 
     def __str__(self):
         res = ""
@@ -36,21 +38,26 @@ class Board:
                         actual_hole = 0
                         miss = not miss
                 actual_hole -= 1
+                if actual_hole == N:
+                    return player
                 if self.players[player][actual_hole] == 1 and not miss:
                     self.players[player][N] += self.players[(player + 1) % 2][N - actual_hole - 1]
                     self.players[(player + 1) % 2][N - actual_hole - 1] = 0
-                    return (player + 1) % 2
-                if actual_hole == N:
+                if miss:
                     return player
-                else:
-                    return (player + 1) % 2
+                return (player + 1) % 2
 
             else:
-                print("Ziomek, no chyba nie. Tu nie ma kamyczków.")
+                print("Tu nie ma kamyczków.")
 
         else:
-            print("Ziomek, no chyba nie. Nie ma takiego pola")
-        return -1
+            print("Nie ma takiego pola")
+        return player
+
+    # def move(self, player, hole):
+    #     act_player = player
+    #     while act_player == player:
+    #         self.single_move()
 
     def is_finish(self, player):
         for i in range(0, N):
@@ -62,10 +69,32 @@ class Board:
         print(self)
         active_player = 0
         while(not self.is_finish(active_player)):
-            hole = int(input('Wybierz dołek (1 - 6): '))
+            hole = int(input('Teraz gracz ' + str(active_player) + '\nWybierz dołek (1 - 6): '))
             hole -= 1
             active_player = self.move(active_player, hole)
             print(self)
+        self.end_of_the_game((active_player + 1) % 2)
+        if self.players[0][N] > self.players[1][N]: winner = 0
+        else: winner = 1
         print("KONIEC GRY!")
-        print("Wygrał gracz " + str(active_player + 1) + "!")
+        print("Wygrał gracz " + str(winner) + "!")
         print("Gratulacje!")
+
+    def end_of_the_game(self, player):
+        print("Koniec ruchów - koniec gry!")
+        for i in range(0, 2):
+            for j in range(0, N):
+                self.players[player][N] += self.players[i][j]
+                self.players[i][j] = 0
+        print(self)
+        if self.players[0][N] > self.players[1][N]: winner = 0
+        else: winner = 1
+        print("KONIEC GRY!")
+        print("Wygrał gracz " + str(winner) + "!")
+        print("Gratulacje!")
+
+    def grade(self, player):
+        return self.players[player][N] - self.players[(player + 1) % 1][N]
+
+
+
