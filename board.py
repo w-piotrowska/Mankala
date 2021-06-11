@@ -48,16 +48,13 @@ class Board:
                 return (player + 1) % 2
 
             else:
-                print("Tu nie ma kamyczków.")
+                #print("Tu nie ma kamyczków.")
+                pass
 
         else:
             print("Nie ma takiego pola")
         return player
 
-    # def move(self, player, hole):
-    #     act_player = player
-    #     while act_player == player:
-    #         self.single_move()
 
     def is_finish(self, player):
         for i in range(0, N):
@@ -92,9 +89,18 @@ class Board:
         print("KONIEC GRY!")
         print("Wygrał gracz " + str(winner) + "!")
         print("Gratulacje!")
+        return winner
 
-    def grade(self, player):
+    def grade1(self, player, hole):
+        return self.players[player][N]
+
+    def grade(self, player, hole):
         return self.players[player][N] - self.players[(player + 1) % 1][N]
+
+    def grade3(self, player, hole):
+        return N - hole
+
+
 
 
 
